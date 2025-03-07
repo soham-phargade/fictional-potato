@@ -1,21 +1,53 @@
 import os
 import re
 from newspaper import Article
+import psycopg2
+import traceback
 
-while(1):
-    url = input("Enter an article: ")
-    if(url == "exit" or url == "quit"): break
+try:
+    conn = psycopg2.connect(
+        dbname="article_db",
+        user="postgres",
+        password=os.getenv("PGPASSWORD"),
+        host="localhost",
+        port="5432"
+    )
+    cur = conn.cursor()
+    print("Connected to PostgreSQL")
+except Exception as e:
+    print("An error occured connecting to DB:", e)
+    print(traceback.format_exc())
 
-    article = Article(url)
-    article.download()
-    article.parse()
+try:
+    while True:
+        try:
+            url = input("Enter an article URL ('exit' to quit): ").strip()
+            if(url.lower() == "exit" or url == "quit"): break
 
-    # Create output folder
-    os.makedirs("output", exist_ok=True)
+            
+            article = Article(url)
+            article.download()
+            article.parse()
+            safe_title = re.sub(r'[^\w\s-]', '', article.title).strip().replace(' ', '_')[:50]
 
-    # Sanitize filename (remove special chars, replace spaces with underscores)
-    safe_title = re.sub(r'[^\w\s-]', '', article.title).strip().replace(' ', '_')[:50]
+            # Save the article
+            cur.execute("SELECT 1 FROM articles WHERE url = %s;", (url,))
+            exists = cur.fetchone() # None if doesn't exist in DB
+            if(not exists):
+                cur.execute(
+                    "INSERT INTO articles (url, title, content, image_url) VALUES (%s, %s, %s, %s);",
+                        (url, article.title, article.text, article.top_image)
+                    )
+            conn.commit()
+        except Exception as e:
+            print("Error occured scraping the URL:", e)
+            #print(traceback.format_exc())
 
-    # Save the article
-    with open(f"output/{safe_title}.txt", "w", encoding="utf-8") as f:
-        f.write(f"Title: {article.title}\n\n{article.text}\n\nImage: {article.top_image}")
+except KeyboardInterrupt:
+    print("\nUser interrupted. Exiting gracefully...")
+
+finally:
+    if conn:
+        cur.close()
+        conn.close()
+        print("Database connection closed.")
