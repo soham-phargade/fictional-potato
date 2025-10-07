@@ -1,0 +1,13 @@
+https://medium.com/@ark.iitkgp/thompson-sampling-python-implementation-cb35a749b7aa
+
+Initialization Step:
+Assign prior probability distributions to each arm’s expected reward (e.g., using beta distributions).
+
+Recurrence Step:
+
+For each time step, repeat:
+
+a. Sample from the posterior distributions of each arm (e.g., using beta distribution sampling after incorporating observed rewards).
+b. Select the arm with the highest sample value (exploitation) and perform the corresponding action.
+c. Observe the reward from the selected arm.
+d. Update the posterior distribution of the selected arm using the observed reward (e.g., update the beta distribution parameters).
