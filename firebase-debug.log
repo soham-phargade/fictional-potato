@@ -1,0 +1,43 @@
+[debug] [2025-10-16T03:09:34.175Z] ----------------------------------------------------------------------
+[debug] [2025-10-16T03:09:34.181Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\soham\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2025-10-16T03:09:34.182Z] CLI Version:   14.20.0
+[debug] [2025-10-16T03:09:34.182Z] Platform:      win32
+[debug] [2025-10-16T03:09:34.182Z] Node Version:  v22.20.0
+[debug] [2025-10-16T03:09:34.183Z] Time:          Wed Oct 15 2025 22:09:34 GMT-0500 (Central Daylight Time)
+[debug] [2025-10-16T03:09:34.183Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-16T03:09:34.667Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-16T03:09:34.668Z] > authorizing via signed-in user (soham.g.phargade@gmail.com)
+[debug] [2025-10-16T03:09:34.669Z] [iam] checking project fictional-potato for permissions ["firebase.projects.get"]
+[debug] [2025-10-16T03:09:34.671Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.671Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.673Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato:testIamPermissions [none]
+[debug] [2025-10-16T03:09:34.673Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato:testIamPermissions x-goog-quota-user=projects/fictional-potato
+[debug] [2025-10-16T03:09:34.673Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-16T03:09:34.809Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato:testIamPermissions 200
+[debug] [2025-10-16T03:09:34.809Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-10-16T03:09:34.811Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.811Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.811Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato [none]
+[debug] [2025-10-16T03:09:34.900Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato 200
+[debug] [2025-10-16T03:09:34.900Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/fictional-potato {"projectNumber":"1098427605591","projectId":"fictional-potato","lifecycleState":"ACTIVE","name":"fictional-potato","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-10-16T02:31:46.977022Z"}
+[info] 
+[info] === Serving from 'C:\Users\soham\Desktop\code\fictional-potato'...
+[info] 
+[debug] [2025-10-16T03:09:34.905Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.905Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:34.906Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/fictional-potato/sites 
+[debug] [2025-10-16T03:09:35.250Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/fictional-potato/sites 200
+[debug] [2025-10-16T03:09:35.250Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/fictional-potato/sites {"sites":[{"name":"projects/fictional-potato/sites/fictional-potato","defaultUrl":"https://fictional-potato.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2025-10-16T03:09:35.251Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:35.251Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:35.251Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato/webApps/-/config [none]
+[debug] [2025-10-16T03:09:35.722Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato/webApps/-/config 200
+[debug] [2025-10-16T03:09:35.723Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato/webApps/-/config {"projectId":"fictional-potato","storageBucket":"fictional-potato.firebasestorage.app","apiKey":"AIzaSyDoZbaN-Y_flIUxOqyPg0goDO_jKlvO5DM","authDomain":"fictional-potato.firebaseapp.com","messagingSenderId":"1098427605591","projectNumber":"1098427605591","version":"2"}
+[debug] [2025-10-16T03:09:35.731Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:35.732Z] Checked if tokens are valid: true, expires at: 1760585902691
+[debug] [2025-10-16T03:09:35.732Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato [none]
+[debug] [2025-10-16T03:09:35.978Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato 200
+[debug] [2025-10-16T03:09:35.978Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/fictional-potato {"projectId":"fictional-potato","projectNumber":"1098427605591","displayName":"fictional-potato","name":"projects/fictional-potato","resources":{"hostingSite":"fictional-potato"},"state":"ACTIVE","etag":"1_9d4c6148-5a2c-468c-9da6-e238587a959d"}
+[info] i  hosting[fictional-potato]: Serving hosting files from: build {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mbuild\u001b[22m"}}
+[info] +  hosting[fictional-potato]: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}
