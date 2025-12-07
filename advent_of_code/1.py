@@ -199,12 +199,81 @@ def solve6():
     print(res)
     return sum(res)
 
+from functools import lru_cache
 def solve7():
     input = get_lines("input7.txt")
+    input = input[1:]
+    m = len(input[0])
+    n = len(input)
+    ray = [0]*m
+    ray[m//2] = 1
+    res = 0
+    for i in range(n):
+        for j in range(m):
+            if ray[j] == 1 and input[i][j] == "^":
+                res += 1
+                ray[j] = 0
+                if j != 0:
+                    ray[j-1] = 1
+                if j != m-1:
+                    ray[j+1] = 1
+    ray = [0]*m
+    ray[m//2] = 1
+    for i in range(n):
+        for j in range(m):
+            if ray[j] and input[i][j] == "^":
+                if j != 0:
+                    ray[j-1] += ray[j]
+                if j != m-1:
+                    ray[j+1] += ray[j]
+                ray[j] = 0
+
+    return sum(ray)
+
+def solve2():
+    input = get_lines("input2.txt")
+    input = input[0].split(",")
+    for i in range(len(input)):
+        input[i] = input[i].split("-")
+    res = 0
+    for i in range(len(input)):
+        s, e = int(input[i][0]), int(input[i][1])
+        for j in range(s, e+1):
+            s = str(j)
+            if len(s)%2 == 1:
+                continue
+            if s[:len(s)//2] == s[len(s)//2:]:
+                res += int(j)
+    res = 0
+    for i in range(len(input)):
+        start, e = int(input[i][0]), int(input[i][1])
+        for j in range(start, e+1):
+            s = str(j)
+            for k in range(1, len(s)//2 + 1):
+                if len(s) % k != 0:
+                    continue
+                pat = s[:k]
+                FLAG = True
+                l = k
+                while FLAG and l+k <= len(s):
+                    if s[l:l+k] != pat:
+                        FLAG = False
+                    l += k
+                if FLAG:
+                    res += int(s)
+                    break
+    
+    return res
+
+def solve8():
+    input = get_lines("input8.txt")
+    pass
 
 if __name__ == "__main__":
     # print(solve())
     # print(solve2())
     #print(solve5())
     #print(solve4())
-    print(solve6())
+    #print(solve7())
+    #print(solve2())
+    print(solve8())
