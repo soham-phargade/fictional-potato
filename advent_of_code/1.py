@@ -268,6 +268,203 @@ def solve2():
 def solve8():
     input = get_lines("input8.txt")
     pass
+from functools import lru_cache
+
+def solve10():
+    input = get_lines("input10.txt")
+    
+    for i in range(len(input)):
+        input[i] = input[i].split(" ")
+    
+    @lru_cache(None)
+    def dp(curr, mask):
+        if curr == TARGET:
+            return 0
+        ans = float("inf")
+        new_mask = list(mask)
+        for i in range(len(switches)):
+            if mask[i]:
+                continue
+            new_curr = list(curr)
+            new_mask[i] = 1
+            for s in switches[i]:
+                new_curr[int(s)] *= -1
+            new_curr = tuple(new_curr)
+            ans = min(ans, 1 + dp(new_curr, tuple(new_mask)))
+            new_mask[i] = 0
+        return ans
+    
+    res = 0
+    for i in range(len(input)):
+        TARGET = list(input[i][0][1:-1])
+        for j in range(len(TARGET)):
+            if TARGET[j] == ".":
+                TARGET[j] = -1
+            else:
+                TARGET[j] = 1
+        curr = [-1]*len(TARGET)
+        switches = input[i][1:-1]
+        for j in range(len(switches)):
+            switches[j] = switches[j][1:-1]
+            switches[j] = switches[j].split(",")
+        mask = [0]*len(switches)
+        compute = dp(tuple(curr), tuple(mask))
+        print(compute)
+        res += compute
+
+    return res
+
+from collections import defaultdict
+def solve11():
+    input = get_lines("input11.txt")
+    for i in range(len(input)):
+        input[i] = input[i].split(" ")
+    adj = defaultdict(list)
+    for i in range(len(input)):
+        node = input[i][0][:-1]
+        for j in range(1, len(input[i])):
+            adj[node].append(input[i][j])
+    
+    visiting = set()
+    # @lru_cache(None)
+    # def dfs(node):
+    #     if node == "out":
+    #         return 1
+    #     visiting.add(node)
+    #     ans = 0
+    #     for nei in adj[node]:
+    #         if nei not in visiting:
+    #             ans += dfs(nei)
+    #     visiting.remove(node)
+    #     return ans
+    
+    @lru_cache(None)
+    def dfs(node, d, f):
+        if node == "out" and d and f:
+            return 1
+        elif node == "out":
+            return 0
+        visiting.add(node)
+        ans = 0
+        for nei in adj[node]:
+            if nei not in visiting and node == "dac":
+                ans += dfs(nei, True, f)
+            elif nei not in visiting and node == "fft":
+                ans += dfs(nei, d, True)
+            elif nei not in visiting:
+                ans += dfs(nei, d, f)
+        visiting.remove(node)
+        return ans
+    
+    return dfs("svr", False, False)
+
+def solve3():
+    input = get_lines("input3.txt")
+    res = 0
+    # for i in range(len(input)):
+    #     f = max(input[i][:-1])
+    #     for j in range(len(input[i])):
+    #         if input[i][j] == f:
+    #             s = max(input[i][j+1:])
+    #             num = f + s
+    #             res += int(num)
+    #             break
+    
+    for i in range(len(input)):
+        num = []
+        id = -1
+        curr = "0"
+        while (len(num) != 12):
+            for j in range(id+1, len(input[i]) - 11 + len(num)):
+                if input[i][j] > curr:
+                    id = j
+                    curr = input[i][id]
+            num.append(input[i][id])
+            curr = "0"
+        num = "".join(num)
+        res += int(num)
+    
+    return res
+
+import heapq
+def solve8():
+    input = get_lines("input8.txt")
+    for i in range(len(input)):
+        input[i] = input[i].split(",")
+    rank = [1]*len(input)
+    par = [i for i in range(len(input))]
+    h = []
+    for i in range(len(input)):
+        for j in range(i+1, len(input)):
+            x, y, z = input[i]
+            a, b, c = input[j]
+            dist = ((int(x)-int(a))**2 + (int(y)-int(b))**2 + (int(z)-int(c))**2)
+            h.append((dist, i, j))
+    heapq.heapify(h)
+
+    def find(n):
+        res = n
+        while res != par[res]:
+            par[n] = par[par[n]]
+            res = par[n]
+        return res
+
+    def union(n1, n2):
+        p1, p2 = find(n1), find(n2)
+        if p1 == p2:
+            return
+        
+        if rank[p1] == rank[p2]:
+            rank[p1] += 1
+            par[p2] = p1
+        elif rank[p1] > rank[p2]:
+            par[p2] = p1
+        elif rank[p1] < rank[p2]:
+            par[p1] = p2
+        return
+
+    while True:
+        d, n1, n2 = heapq.heappop(h)
+        union(n1, n2)
+        for i in range(len(input)):
+            par[i] = find(i)
+        conn = set()
+        for i in range(len(par)):
+            conn.add(par[i])
+        if len(conn) == 1:
+            x1, _, _ = input[n1]
+            x2, _, _ = input[n2]
+            return int(x1)*int(x2)
+    # for _ in range(1000):
+    #     d, n1, n2 = heapq.heappop(h)
+    #     union(n1, n2)
+
+    # size = defaultdict(int)
+    # for i in range(len(input)):
+    #     size[find(i)] += 1
+    
+    # arr = list(size.values())
+    # arr.sort(reverse=True)
+    # return prod(arr[:3])
+
+
+def solve9():
+    data = get_lines("input9.txt")
+    for i in range(len(data)):
+        data[i] = data[i].split(",")
+        for j in range(len(data[i])):
+            data[i][j] = int(data[i][j])
+    
+    res = 0
+    for i in range(len(data)):
+        for j in range(i+1, len(data)):
+            x1, y1 = data[i]
+            x2, y2 = data[j]
+            hor = abs(x1-x2) + 1
+            ver = abs(y1-y2) + 1
+            res = max(res, hor*ver)
+    
+    return res
 
 if __name__ == "__main__":
     # print(solve())
@@ -276,4 +473,7 @@ if __name__ == "__main__":
     #print(solve4())
     #print(solve7())
     #print(solve2())
-    print(solve8())
+    #print(solve11())
+    #print(solve3())
+    #print(solve8())
+    print(solve9())
