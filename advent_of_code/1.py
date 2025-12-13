@@ -270,50 +270,6 @@ def solve8():
     pass
 from functools import lru_cache
 
-def solve10():
-    input = get_lines("input10.txt")
-    
-    for i in range(len(input)):
-        input[i] = input[i].split(" ")
-    
-    @lru_cache(None)
-    def dp(curr, mask):
-        if curr == TARGET:
-            return 0
-        ans = float("inf")
-        new_mask = list(mask)
-        for i in range(len(switches)):
-            if mask[i]:
-                continue
-            new_curr = list(curr)
-            new_mask[i] = 1
-            for s in switches[i]:
-                new_curr[int(s)] *= -1
-            new_curr = tuple(new_curr)
-            ans = min(ans, 1 + dp(new_curr, tuple(new_mask)))
-            new_mask[i] = 0
-        return ans
-    
-    res = 0
-    for i in range(len(input)):
-        TARGET = list(input[i][0][1:-1])
-        for j in range(len(TARGET)):
-            if TARGET[j] == ".":
-                TARGET[j] = -1
-            else:
-                TARGET[j] = 1
-        curr = [-1]*len(TARGET)
-        switches = input[i][1:-1]
-        for j in range(len(switches)):
-            switches[j] = switches[j][1:-1]
-            switches[j] = switches[j].split(",")
-        mask = [0]*len(switches)
-        compute = dp(tuple(curr), tuple(mask))
-        print(compute)
-        res += compute
-
-    return res
-
 from collections import defaultdict
 def solve11():
     input = get_lines("input11.txt")
@@ -447,7 +403,7 @@ def solve8():
     # arr.sort(reverse=True)
     # return prod(arr[:3])
 
-
+from shapely.geometry import Polygon, box
 def solve9():
     data = get_lines("input9.txt")
     for i in range(len(data)):
@@ -455,25 +411,133 @@ def solve9():
         for j in range(len(data[i])):
             data[i][j] = int(data[i][j])
     
+    # res = 0
+    # for i in range(len(data)):
+    #     for j in range(i+1, len(data)):
+    #         x1, y1 = data[i]
+    #         x2, y2 = data[j]
+    #         hor = abs(x1-x2) + 1
+    #         ver = abs(y1-y2) + 1
+    #         res = max(res, hor*ver)
+    
+    # return res
     res = 0
+    poly = Polygon(data)
     for i in range(len(data)):
         for j in range(i+1, len(data)):
-            x1, y1 = data[i]
-            x2, y2 = data[j]
-            hor = abs(x1-x2) + 1
-            ver = abs(y1-y2) + 1
-            res = max(res, hor*ver)
-    
+            ax, ay = data[i]
+            bx, by = data[j]
+            rect = box(min(ax, bx), min(ay, by), max(ax, bx), max(ay, by))
+            if poly.contains(rect):
+                hor = abs(ax-bx) + 1
+                ver = abs(ay-by) + 1
+                res = max(res, hor*ver)
+
     return res
+
+# spaceybread
+def solve12():
+    it = get_lines("input12.txt")
+    hc = [7, 7, 7, 7, 6, 5]
+    o = 0
+    e = 0
+    for x in it:
+        if ': ' in x:
+            e += 1
+            a_s, c_s = x.split(': ')
+            x, y = map(int, a_s.split('x'))
+            s = sum(j * k for j, k in zip(map(int, c_s.split()), hc))
+            o += 1 if x * y > s else 0
+    return o
+
+def solve10():
+    data = get_lines("input10.txt")
+    
+    def dfs(i, curr, id):
+        if curr == data[i][0]:
+            return 0
+        if id == len(data[i]) - 1:
+            return float("inf")
+        for j in range(len(data[i][id])):
+            curr[int(data[i][id][j])] *= -1
+        res = 1 + dfs(i, curr, id+1)
+        for j in range(len(data[i][id])):
+            curr[int(data[i][id][j])] *= -1
+        res = min(res, dfs(i, curr, id+1))
+        return res
+
+    for i in range(len(data)):
+        data[i] = data[i].split(" ")
+    
+    ans = []
+    for i in range(len(data)):
+        TARGET = list(data[i][0][1:-1])
+        for j in range(len(TARGET)):
+            if TARGET[j] == "#":
+                TARGET[j] = 1
+            else:
+                TARGET[j] = -1
+        #data[i][0] = "".join(TARGET)
+        data[i][0] = TARGET
+        for j in range(1, len(data[i]) - 1):
+            tmp = data[i][j][1:-1]
+            data[i][j] = tmp.split(",")
+        ans.append(dfs(i, [-1]*len(TARGET), 1))
+    
+    return sum(ans)
+
+# Ansh aided by GPT
+def solve10p2():
+    import re
+    import sys
+    import z3
+
+    lines = get_lines("input10.txt")
+    total = 0
+    for line in lines:
+        parts = line.split()
+        buttons = parts[1:-1]
+        joltage = parts[-1]
+
+        jns = [int(x) for x in re.findall(r'\d+', joltage)]
+
+        NS = []
+        for button in buttons:
+            ns = [int(x) for x in re.findall(r'\d+', button)]
+            NS.append(ns)
+
+        V = [z3.Int(f'B{i}') for i in range(len(buttons))]
+
+        EQ = []
+        for i in range(len(jns)):
+            terms = []
+            for j in range(len(buttons)):
+                if i in NS[j]: terms.append(V[j])
+            EQ.append(sum(terms) == jns[i])
+
+        opt = z3.Optimize()
+        for eq in EQ: opt.add(eq)
+        for v in V: opt.add(v >= 0)
+        opt.minimize(sum(V))
+
+        assert opt.check() == z3.sat
+        model = opt.model()
+
+        for v in V: total += model[v].as_long()
+
+    return total
 
 if __name__ == "__main__":
     # print(solve())
     # print(solve2())
-    #print(solve5())
-    #print(solve4())
-    #print(solve7())
-    #print(solve2())
-    #print(solve11())
-    #print(solve3())
-    #print(solve8())
-    print(solve9())
+    # print(solve5())
+    # print(solve4())
+    # print(solve7())
+    # print(solve2())
+    # print(solve11())
+    # print(solve3())
+    # print(solve8())
+    # print(solve12())
+    # print(solve9())
+    # print(solve10())
+    # print(solve10p2())
